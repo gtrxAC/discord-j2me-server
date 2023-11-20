@@ -8,7 +8,7 @@ const server = new Server({
     key: readFileSync("ssl/privkey.pem"),
     cert: readFileSync("ssl/cert.pem"),
     dhparam: readFileSync("ssl/ssl-dhparams.pem"),
-    ciphers: "DHE-RSA-AES256-SHA",
+    ciphers: "DEFAULT:@SECLEVEL=0",
     secureProtocol: "TLS_method"
 }).listen(PORT);
 
