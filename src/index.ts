@@ -1,16 +1,12 @@
-import { Server } from "tls";
-import { readFileSync } from "fs";
+import { createServer } from 'net';
 import { Client } from "./Client";
 
-const { PORT = 8080 } = process.env;
+const { PORT = 8081 } = process.env;
 
-const server = new Server({
-    key: readFileSync("ssl/privkey.pem"),
-    cert: readFileSync("ssl/cert.pem"),
-    dhparam: readFileSync("ssl/ssl-dhparams.pem"),
-    ciphers: "DEFAULT:@SECLEVEL=0",
-    secureProtocol: "TLS_method"
-}).listen(PORT);
+const server = createServer((socket) => {
+    new Client(socket).handleConnection()
+})
 
-server.on("listening", () => console.log(`TCP server is listening on port ${PORT}.`));
-server.on("secureConnection", socket => new Client(socket).handleConnection());
+server.listen(PORT, () => {
+    console.log(`TCP server is listening on port ${PORT}.`);
+});

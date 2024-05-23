@@ -1,4 +1,4 @@
-import { TLSSocket } from "tls";
+import { Socket } from "net";
 import WebSocket from "ws";
 import { ConnectData } from "./dto/ConnectData";
 import { Payload } from "./dto/Payload";
@@ -11,7 +11,7 @@ export class Client {
     private supportedEvents: string[] = [];
 
     constructor(
-        private socket: TLSSocket
+        private socket: Socket
     ) {}
 
     private createMessageReceiver = () => {
@@ -36,7 +36,7 @@ export class Client {
         this.createMessageReceiver();
 
         this.socket.on("error", this.handleClose);
-        this.socket.on("close", this.handleClose);
+        this.socket.on("end", this.handleClose);
 
         console.log("Client connected.");
         this.sendObject({
