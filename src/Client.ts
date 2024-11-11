@@ -106,10 +106,21 @@ export class Client {
             })
             .on("unexpected-response", console.error)
             .on("message", json => {
-                const t = json.toString().match(/"t":"([A-Z_]+)".+/)?.[1];
+                const jsonStr = json.toString();
+                const t = jsonStr.match(/"t":"([A-Z_]+)".+/)?.[1];
+                
+                if (t == "READY") {
+                    this.sendObject({
+                        op: -1,
+                        t: "J2ME_READY",
+                        d: {
+                            id: JSON.parse(jsonStr).d.user.id
+                        }
+                    })
+                }
 
                 if (!t || !this.supportedEvents.length || this.supportedEvents.includes(t))
-                    this.sendMessage(json.toString());
+                    this.sendMessage(jsonStr);
             });
     }
 
