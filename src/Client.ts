@@ -3,6 +3,7 @@ import WebSocket from "ws";
 import { ConnectData } from "./dto/ConnectData";
 import { Payload } from "./dto/Payload";
 import { UpdateSupportedEventsData } from "./dto/UpdateSupportedEventsData";
+import parseMessage from "./parseMessage";
 
 const NEW_LINE = "\n".charCodeAt(0);
 
@@ -118,9 +119,16 @@ export class Client {
                         }
                     })
                 }
-
-                if (!t || !this.supportedEvents.length || this.supportedEvents.includes(t))
+                else if (t == "MESSAGE_CREATE" && this.supportedEvents.includes("J2ME_MESSAGE_CREATE")) {
+                    this.sendObject({
+                        op: -1,
+                        t: "J2ME_MESSAGE_CREATE",
+                        d: parseMessage(JSON.parse(jsonStr).d)
+                    })
+                }
+                else if (!t || !this.supportedEvents.length || this.supportedEvents.includes(t)) {
                     this.sendMessage(jsonStr);
+                }
             });
     }
 

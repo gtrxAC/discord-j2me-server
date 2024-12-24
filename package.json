@@ -4,13 +4,14 @@
   "description": "",
   "main": "out/index.js",
   "scripts": {
-      "build": "tsc -p .",
-      "watch": "tsc -w -p .",
-      "start": "node out"
+    "build": "tsc -p .",
+    "watch": "tsc -w -p .",
+    "start": "node out"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "emoji-js": "^3.8.0",
     "ws": "^8.0.0"
   },
   "devDependencies": {
