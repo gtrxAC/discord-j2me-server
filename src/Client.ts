@@ -52,7 +52,6 @@ export class Client {
     }
 
     private handleMessage = (message: string) => {
-        console.log("Received a message from client:", message);
         try {
             const parsed = JSON.parse(message);
             if ("op" in parsed && parsed.op === -1) {
@@ -133,7 +132,6 @@ export class Client {
     }
 
     sendMessage = (data: string) => {
-        console.log("Sending to client: " + data);
         this.socket.write(data + "\n");
     }
 
