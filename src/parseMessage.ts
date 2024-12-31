@@ -19,7 +19,8 @@ function parseMessageContent(content: string) {
 export default function parseMessageObject(msg: any) {
     const result: any = {
         id: msg.id,
-        channel_id: msg.channel_id
+        channel_id: msg.channel_id,
+        guild_id: msg.guild_id
     }
     if (msg.author) {
         result.author = {
