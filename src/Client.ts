@@ -39,7 +39,7 @@ export class Client {
         this.socket.on("error", this.handleClose);
         this.socket.on("end", this.handleClose);
 
-        console.log("Client connected.");
+        // console.log("Client connected.");
         this.sendObject({
             op: -1,
             t: "GATEWAY_HELLO"
@@ -47,12 +47,12 @@ export class Client {
     }
 
     private handleClose = () => {
-        console.log("Client disconnected.");
+        // console.log("Client disconnected.");
         this.websocket?.close();
     }
 
     private handleMessage = (message: string) => {
-        console.log("Received a message from client:", message);
+        // console.log("Received a message from client:", message);
         try {
             const parsed = JSON.parse(message);
             if ("op" in parsed && parsed.op === -1) {
@@ -133,7 +133,7 @@ export class Client {
     }
 
     sendMessage = (data: string) => {
-        console.log("Sending to client: " + data);
+        // console.log("Sending to client: " + data);
         this.socket.write(data + "\n");
     }
 
