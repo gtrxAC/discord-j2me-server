@@ -119,10 +119,13 @@ export class Client {
                         }
                     })
                 }
-                else if (t == "MESSAGE_CREATE" && this.supportedEvents.includes("J2ME_MESSAGE_CREATE")) {
+                else if (
+                    (t == "MESSAGE_CREATE" && this.supportedEvents.includes("J2ME_MESSAGE_CREATE")) ||
+                    (t == "MESSAGE_UPDATE" && this.supportedEvents.includes("J2ME_MESSAGE_UPDATE"))
+                ) {
                     this.sendObject({
                         op: -1,
-                        t: "J2ME_MESSAGE_CREATE",
+                        t: "J2ME_" + t,
                         d: parseMessage(JSON.parse(jsonStr).d)
                     })
                 }
