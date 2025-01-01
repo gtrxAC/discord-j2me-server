@@ -10,6 +10,7 @@ const NEW_LINE = "\n".charCodeAt(0);
 export class Client {
     private websocket?: WebSocket;
     private supportedEvents: string[] = [];
+    private showGuildEmoji: boolean = false;
 
     constructor(
         private socket: Socket
@@ -77,6 +78,9 @@ export class Client {
             case "GATEWAY_UPDATE_SUPPORTED_EVENTS":
                 this.supportedEvents = (payload.d as UpdateSupportedEventsData).supported_events;
                 break;
+            case "GATEWAY_SHOW_GUILD_EMOJI":
+                this.showGuildEmoji = Boolean(payload.d);
+                break;
             default:
         }
     }
@@ -126,7 +130,7 @@ export class Client {
                     this.sendObject({
                         op: -1,
                         t: "J2ME_" + t,
-                        d: parseMessage(JSON.parse(jsonStr).d)
+                        d: parseMessage(JSON.parse(jsonStr).d, this.showGuildEmoji)
                     })
                 }
                 else if (!t || !this.supportedEvents.length || this.supportedEvents.includes(t)) {

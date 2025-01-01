@@ -2,7 +2,12 @@ import EmojiConvertor from 'emoji-js';
 const emoji = new EmojiConvertor();
 emoji.replace_mode = 'unified';
 
-function parseMessageContent(content: string) {
+function parseMessageContent(content: string, showGuildEmoji: boolean) {
+    if (!showGuildEmoji) {
+        // replace <:name:12345...> emoji format with :name:
+        content = content.replace(/<a?(:\w*:)\d{15,}>/gm, "$1")
+    }
+
     // Replace Unicode emojis with :name: textual representations
     emoji.colons_mode = true;
     content = emoji.replace_unified(content);
@@ -16,7 +21,7 @@ function parseMessageContent(content: string) {
     return content;
 }
 
-export default function parseMessageObject(msg: any) {
+export default function parseMessageObject(msg: any, showGuildEmoji: boolean) {
     const result: any = {
         id: msg.id,
         channel_id: msg.channel_id,
@@ -36,12 +41,12 @@ export default function parseMessageObject(msg: any) {
 
     // Parse content 
     if (msg.content) {
-        result.content = parseMessageContent(msg.content);
+        result.content = parseMessageContent(msg.content, showGuildEmoji);
         if (result.content != msg.content) result._rc = msg.content;
     }
 
     if (msg.referenced_message) {
-        let content = parseMessageContent(msg.referenced_message.content);
+        let content = parseMessageContent(msg.referenced_message.content, showGuildEmoji);
 
         // Replace newlines with spaces (reply is shown as one line)
         content = content.replace(/\r\n|\r|\n/gm, "  ");
