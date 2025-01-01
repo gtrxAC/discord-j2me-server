@@ -91,18 +91,17 @@ export default function parseMessageObject(msg: any, showGuildEmoji: boolean) {
             };
         })
     }
-
-    // Need first mentioned user for group DM join/leave notification messages
-    if ((msg.type == 1 || msg.type == 2) && msg.mentions.length) {
-        result.mentions = [
-            {
-                id: msg.mentions[0].id,
-                global_name: msg.mentions[0].global_name
+    if (msg.mentions?.length) {
+        result.mentions = msg.mentions.map(ment => {
+            const result = {
+                id: ment.id,
+                global_name: ment.global_name
             }
-        ]
-        if (msg.mentions[0].global_name == null) {
-            result.mentions[0].username = msg.mentions[0].username;
-        }
+            if (ment.global_name == null) {
+                result['username'] = ment.username;
+            }
+            return result;
+        })
     }
 
     return result;
