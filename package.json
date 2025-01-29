@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.9",
     "emoji-js": "^3.8.0",
     "ws": "^8.0.0"
   },

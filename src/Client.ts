@@ -4,13 +4,26 @@ import { ConnectData } from "./dto/ConnectData";
 import { Payload } from "./dto/Payload";
 import { UpdateSupportedEventsData } from "./dto/UpdateSupportedEventsData";
 import parseMessage from "./parseMessage";
+import axios from "axios";
 
 const NEW_LINE = "\n".charCodeAt(0);
+
+const defaultHeaders = {
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0",
+    "Accept": "*/*",
+    "Accept-Language": "en-US,en;q=0.5",
+    "X-Discord-Locale": "en-GB",
+    "X-Debug-Options": "bugReporterEnabled",
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "same-origin"
+};
 
 export class Client {
     private websocket?: WebSocket;
     private supportedEvents: string[] = [];
     private showGuildEmoji: boolean = false;
+    private token: string;
 
     constructor(
         private socket: Socket
@@ -59,6 +72,7 @@ export class Client {
             if ("op" in parsed && parsed.op === -1) {
                 this.handleProxyMessage(parsed);
             } else {
+                if (parsed.d?.token) this.token = parsed.d?.token;
                 this.websocket?.send(message);
             }
         } catch (e) {
@@ -81,6 +95,15 @@ export class Client {
             case "GATEWAY_SHOW_GUILD_EMOJI":
                 this.showGuildEmoji = Boolean(payload.d);
                 break;
+            case "GATEWAY_SEND_TYPING": {
+                const channelId = String(payload.d);
+                if (!/^\d{17,30}$/.test(channelId)) return;
+                axios.post(
+                    `https://discord.com/api/v9/channels/${channelId}/typing`, "",
+                    {headers: {...defaultHeaders, Authorization: this.token}}
+                );
+                break;
+            }
             default:
         }
     }
