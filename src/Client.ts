@@ -145,6 +145,21 @@ export class Client {
                             id: JSON.parse(jsonStr).d.user.id
                         }
                     })
+                    if (this.supportedEvents.includes("J2ME_READ_STATES")) {
+                        const entries = [];
+
+                        JSON.parse(jsonStr).d.read_state.entries.forEach(obj => {
+                            if (!obj.last_message_id) return;
+                            entries.push(obj.id);
+                            entries.push(obj.last_message_id);
+                        })
+
+                        this.sendObject({
+                            op: -1,
+                            t: "J2ME_READ_STATES",
+                            d: entries
+                        })
+                    }
                 }
                 else if (
                     (t == "MESSAGE_CREATE" && this.supportedEvents.includes("J2ME_MESSAGE_CREATE")) ||
