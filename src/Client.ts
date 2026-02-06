@@ -140,6 +140,7 @@ export class Client {
                 if (t == "READY") {
                     this.sendObject({
                         op: -1,
+                        s: JSON.parse(jsonStr).s,
                         t: "J2ME_READY",
                         d: {
                             id: JSON.parse(jsonStr).d.user.id
@@ -156,8 +157,17 @@ export class Client {
 
                         this.sendObject({
                             op: -1,
+                            s: JSON.parse(jsonStr).s,
                             t: "J2ME_READ_STATES",
                             d: entries
+                        })
+                    }
+                    if (this.supportedEvents.includes("READY")) {
+                        this.sendObject({
+                            op: -1,
+                            s: JSON.parse(jsonStr).s,
+                            t: "READY",
+                            d: JSON.parse(jsonStr).d
                         })
                     }
                 }
@@ -167,6 +177,7 @@ export class Client {
                 ) {
                     this.sendObject({
                         op: -1,
+                        s: JSON.parse(jsonStr).s,
                         t: "J2ME_" + t,
                         d: parseMessage(JSON.parse(jsonStr).d, this.showGuildEmoji)
                     })
