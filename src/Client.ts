@@ -5,6 +5,7 @@ import { Payload } from "./dto/Payload";
 import { UpdateSupportedEventsData } from "./dto/UpdateSupportedEventsData";
 import parseMessage from "./parseMessage";
 import axios from "axios";
+import QRLoginServer from './qrcode';
 
 const NEW_LINE = "\n".charCodeAt(0);
 
@@ -57,6 +58,7 @@ export class Client {
     private supportedEvents: string[] = [];
     private showGuildEmoji: boolean = false;
     private token: string;
+    private qr: QRLoginServer;
 
     constructor(
         private socket: Socket
@@ -143,6 +145,10 @@ export class Client {
                 );
                 break;
             }
+            case "GATEWAY_CONNECT_REMOTEAUTH": {
+                this.qr = new QRLoginServer(this.socket); 
+                break;
+            }
             default:
         }
     }
@@ -159,6 +165,7 @@ export class Client {
                     }
                 });
                 this.socket.destroy();
+                this.qr?.close();
 
             })
             .on("close", (code, reason) => {
@@ -170,6 +177,7 @@ export class Client {
                     }
                 });
                 this.socket.destroy();
+                this.qr?.close();
             })
             .on("unexpected-response", console.error)
             .on("message", json => {
