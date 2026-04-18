@@ -30,7 +30,7 @@ const superProps = {
 
 // Headers taken from Firefox HTTP request, some may be unnecessary
 // I don't know which headers the Android app sends
-const defaultHeaders = {
+export const defaultHeaders = {
     "User-Agent": "Discord-Android/262205;RNA",
     "X-Super-Properties": btoa(JSON.stringify(superProps)),
     "X-Discord-Locale": "en-US",

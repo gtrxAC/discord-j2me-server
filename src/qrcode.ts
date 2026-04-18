@@ -1,6 +1,7 @@
 import { Socket } from "net";
 import WebSocket from 'ws';
 import axios from 'axios';
+import { defaultHeaders } from "./Client";
 
 export default class QRLoginServer {
     // Reference:
@@ -94,7 +95,8 @@ export default class QRLoginServer {
                 case "pending_login": {
                     const response = await axios.post(
                         "https://discord.com/api/v9/users/@me/remote-auth/login",
-                        {ticket: msg.ticket}
+                        {ticket: msg.ticket},
+                        {headers: defaultHeaders}
                     );
                     
                     const token = await this.decryptBase64(response.data.encrypted_token);
